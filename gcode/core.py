@@ -17,21 +17,17 @@ class GCode:
             cmd += f" Z{z:.2f}"
         self.commands.append(cmd)
 
-    def move_linear(self, x: float | None = None, y: float | None = None, z: float | None = None, feedrate: Feedrate | None = None):
+    def move_linear(self, feedrate: Feedrate, x: float | None = None, y: float | None = None, z: float | None = None):
         cmd = "G1"
         if x is not None:
             cmd += f" X{x:.2f}"
-            if feedrate is not None and feedrate.x is not None:
-                cmd += f" {feedrate.x}"
         if y is not None:
             cmd += f" Y{y:.2f}"
-            if feedrate is not None and feedrate.y is not None:
-                cmd += f" {feedrate.y}"
         if z is not None:
             cmd += f" Z{z:.2f}"
-            if feedrate is not None and feedrate.z is not None:
-                cmd += f" {feedrate.z}"
         
+        cmd += f" {feedrate}"
+
         self.commands.append(cmd)
 
 
