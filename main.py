@@ -1,4 +1,3 @@
-import sys
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from gcode import GCode, Feedrate
@@ -56,15 +55,5 @@ def convert():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    # If a command line argument is provided, use it as before (CLI mode)
-    if len(sys.argv) > 1 and not sys.argv[1].startswith('--'):
-        image_path = sys.argv[1]
-        try:
-            print(process_image(image_path))
-        except Exception as e:
-            print(f"Error: {e}")
-            sys.exit(1)
-    else:
-        # Otherwise start the server
-        port = int(os.environ.get('PORT', 5000))
-        app.run(host='0.0.0.0', port=port)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

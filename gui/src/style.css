@@ -163,7 +163,6 @@ button:disabled {
   color: #ef4444;
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
