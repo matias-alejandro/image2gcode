@@ -38,7 +38,7 @@ function startPythonServer() {
     let args: string[];
 
     if (isDev) {
-        const projectRoot = path.resolve(__dirname, '../../');
+        const projectRoot = path.resolve(__dirname, '../backend');
         pythonPath = path.join(projectRoot, 'env', 'bin', 'python');
         const scriptPath = path.join(projectRoot, 'main.py');
         args = [scriptPath];

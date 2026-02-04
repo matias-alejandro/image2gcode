@@ -9,6 +9,10 @@ export class GCodeRenderer {
     private controls: OrbitControls;
     private lineGroup: THREE.Group;
     private labelGroup: THREE.Group;
+    private gridHelper?: THREE.GridHelper;
+    private axesHelper?: THREE.AxesHelper;
+    private showGrid: boolean = true;
+    private showAxes: boolean = true;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -39,12 +43,14 @@ export class GCodeRenderer {
         const gridSize = 1000;
         const gridDivisions = 100;
 
-        const gridHelper = new THREE.GridHelper(gridSize, gridDivisions, 0x444444, 0x222222);
-        gridHelper.rotation.x = Math.PI / 2;
-        this.scene.add(gridHelper);
+        this.gridHelper = new THREE.GridHelper(gridSize, gridDivisions, 0x444444, 0x222222);
+        this.gridHelper.rotation.x = Math.PI / 2;
+        this.gridHelper.visible = this.showGrid;
+        this.scene.add(this.gridHelper);
 
-        const axesHelper = new THREE.AxesHelper(100);
-        this.scene.add(axesHelper);
+        this.axesHelper = new THREE.AxesHelper(100);
+        this.axesHelper.visible = this.showAxes;
+        this.scene.add(this.axesHelper);
 
         this.addGridLabels(gridSize, gridDivisions);
 
@@ -54,13 +60,15 @@ export class GCodeRenderer {
     }
 
     updateGrid(size: number, divisions: number) {
-        const objectsToRemove: THREE.Object3D[] = [];
-        this.scene.traverse((object) => {
-            if (object instanceof THREE.GridHelper) {
-                objectsToRemove.push(object);
+        if (this.gridHelper) {
+            this.scene.remove(this.gridHelper);
+            this.gridHelper.geometry.dispose();
+            if (Array.isArray(this.gridHelper.material)) {
+                this.gridHelper.material.forEach(m => m.dispose());
+            } else {
+                this.gridHelper.material.dispose();
             }
-        });
-        objectsToRemove.forEach(obj => this.scene.remove(obj));
+        }
 
         while (this.labelGroup.children.length > 0) {
             const child = this.labelGroup.children[0];
@@ -75,11 +83,28 @@ export class GCodeRenderer {
             this.labelGroup.remove(child);
         }
 
-        const gridHelper = new THREE.GridHelper(size, divisions, 0x444444, 0x222222);
-        gridHelper.rotation.x = Math.PI / 2;
-        this.scene.add(gridHelper);
+        this.gridHelper = new THREE.GridHelper(size, divisions, 0x444444, 0x222222);
+        this.gridHelper.rotation.x = Math.PI / 2;
+        this.gridHelper.visible = this.showGrid;
+        this.scene.add(this.gridHelper);
+        this.labelGroup.visible = this.showGrid;
 
         this.addGridLabels(size, divisions);
+    }
+
+    setGridVisibility(visible: boolean) {
+        this.showGrid = visible;
+        if (this.gridHelper) {
+            this.gridHelper.visible = visible;
+        }
+        this.labelGroup.visible = visible;
+    }
+
+    setAxesVisibility(visible: boolean) {
+        this.showAxes = visible;
+        if (this.axesHelper) {
+            this.axesHelper.visible = visible;
+        }
     }
 
     private addGridLabels(size: number, divisions: number) {

@@ -15,12 +15,27 @@ const saveBtn = document.getElementById('save-btn') as HTMLButtonElement;
 const settingsBtn = document.getElementById('settings-btn') as HTMLButtonElement;
 const outputLog = document.getElementById('output-log') as HTMLDivElement;
 
+const previewLabel = document.getElementById('preview-label') as HTMLDivElement;
+previewLabel.textContent = 'Image 2 G-Code ' + __APP_VERSION__;
+
 const appContainer = document.getElementById('app') as HTMLDivElement;
 
 const gcodeRenderer = new GCodeRenderer(gcodeCanvas);
-const settingsModal = new SettingsModal(appContainer, (size, divisions) => {
-	gcodeRenderer.updateGrid(size, divisions);
-	log(`Preview grid updated: ${size}mm / ${divisions} divisions`);
+const settingsModal = new SettingsModal(appContainer, {
+	gridSize: 1000,
+	gridDivisions: 100,
+	showConsole: false,
+	showGrid: true,
+	showAxes: true
+}, (settings) => {
+	gcodeRenderer.updateGrid(settings.gridSize, settings.gridDivisions);
+	gcodeRenderer.setGridVisibility(settings.showGrid);
+	gcodeRenderer.setAxesVisibility(settings.showAxes);
+
+	showConsoleState = settings.showConsole;
+	outputLog.style.display = settings.showConsole ? 'block' : 'none';
+
+	log(`Settings updated: Grid ${settings.showGrid ? 'ON' : 'OFF'}, Axes ${settings.showAxes ? 'ON' : 'OFF'}, Console ${settings.showConsole ? 'ON' : 'OFF'}`);
 });
 
 const handleFileSelect = async (file: File) => {
@@ -95,8 +110,12 @@ const triggerConversion = async () => {
 	}
 };
 
+let showConsoleState = false;
+
 const log = (message: string, isError = false) => {
-	outputLog.style.display = 'block';
+	if (showConsoleState || isError) {
+		outputLog.style.display = 'block';
+	}
 	const line = document.createElement('div');
 	line.textContent = `> ${message}`;
 	if (isError) line.classList.add('error');

@@ -1,10 +1,5 @@
 __pycache__
 /env
-/*.jpg
-/*.jpeg
-/*.png
-/*.svg
-/*.gcode
 
 dist
 build
