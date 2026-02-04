@@ -2,6 +2,7 @@
 import './style.css'
 import './electron.d.ts'
 import { GCodeRenderer } from './gcode-preview.ts'
+import { SettingsModal } from './components/SettingsModal'
 
 let selectedFilePath: string | null = null;
 let currentGCode: string | null = null;
@@ -14,13 +15,13 @@ const saveBtn = document.getElementById('save-btn') as HTMLButtonElement;
 const settingsBtn = document.getElementById('settings-btn') as HTMLButtonElement;
 const outputLog = document.getElementById('output-log') as HTMLDivElement;
 
-const settingsModal = document.getElementById('settings-modal') as HTMLDivElement;
-const closeSettingsBtn = document.getElementById('close-settings') as HTMLButtonElement;
-const applySettingsBtn = document.getElementById('apply-settings') as HTMLButtonElement;
-const gridSizeInput = document.getElementById('grid-size') as HTMLInputElement;
-const gridDivisionsInput = document.getElementById('grid-divisions') as HTMLInputElement;
+const appContainer = document.getElementById('app') as HTMLDivElement;
 
 const gcodeRenderer = new GCodeRenderer(gcodeCanvas);
+const settingsModal = new SettingsModal(appContainer, (size, divisions) => {
+	gcodeRenderer.updateGrid(size, divisions);
+	log(`Preview grid updated: ${size}mm / ${divisions} divisions`);
+});
 
 const handleFileSelect = async (file: File) => {
 	const path = window.electronAPI.getPathForFile(file);
@@ -127,29 +128,5 @@ saveBtn.addEventListener('click', async () => {
 });
 
 settingsBtn.addEventListener('click', () => {
-	settingsModal.style.display = 'block';
-});
-
-closeSettingsBtn.addEventListener('click', () => {
-	settingsModal.style.display = 'none';
-});
-
-applySettingsBtn.addEventListener('click', () => {
-	const size = parseInt(gridSizeInput.value);
-	const divisions = parseInt(gridDivisionsInput.value);
-
-	if (isNaN(size) || isNaN(divisions)) {
-		log('Invalid settings.', true);
-		return;
-	}
-
-	gcodeRenderer.updateGrid(size, divisions);
-	settingsModal.style.display = 'none';
-	log(`Preview grid updated: ${size}mm / ${divisions} divisions`);
-});
-
-window.addEventListener('click', (event) => {
-	if (event.target === settingsModal) {
-		settingsModal.style.display = 'none';
-	}
+	settingsModal.show();
 });
