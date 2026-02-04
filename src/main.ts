@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import './style.css'
 import './electron.d.ts'
-import { GCodeRenderer } from './gcode-preview'
+import { GCodeRenderer } from './gcode-preview.ts'
 
 let selectedFilePath: string | null = null;
 let currentGCode: string | null = null;

@@ -26,19 +26,30 @@ function createWindow() {
         mainWindow.loadURL('http://localhost:5173');
         mainWindow.webContents.openDevTools();
     } else {
-        mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+        mainWindow.loadFile(path.join(__dirname, 'index.html'));
     }
 }
 
 let pythonProcess: any = null;
 
 function startPythonServer() {
-    const projectRoot = path.resolve(__dirname, '../../');
-    const pythonPath = path.join(projectRoot, 'env', 'bin', 'python');
-    const scriptPath = path.join(projectRoot, 'main.py');
+    const isDev = process.env.NODE_ENV === 'development';
+    let pythonPath: string;
+    let args: string[];
 
-    console.log(`Starting Python server: ${pythonPath} ${scriptPath}`);
-    pythonProcess = spawn(pythonPath, [scriptPath]);
+    if (isDev) {
+        const projectRoot = path.resolve(__dirname, '../../');
+        pythonPath = path.join(projectRoot, 'env', 'bin', 'python');
+        const scriptPath = path.join(projectRoot, 'main.py');
+        args = [scriptPath];
+        console.log(`Starting Python server (dev): ${pythonPath} ${scriptPath}`);
+    } else {
+        pythonPath = path.join(process.resourcesPath, 'bin', 'main');
+        args = [];
+        console.log(`Starting Python server (prod): ${pythonPath}`);
+    }
+
+    pythonProcess = spawn(pythonPath, args);
 
     pythonProcess.stdout.on('data', (data: any) => {
         console.log(`Python stdout: ${data}`);

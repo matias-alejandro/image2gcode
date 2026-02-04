@@ -1,0 +1,50 @@
+{
+  "name": "gui",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Convert images to G-Code for CNC plotting",
+  "author": "Matias Del Pin",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
+    "dev:vite": "vite",
+    "dev:electron": "tsc -p electron && electron .",
+    "build": "tsc && vite build && tsc -p electron",
+    "preview": "vite preview",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "@types/node": "^25.1.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
+    "electron": "^40.1.0",
+    "electron-builder": "^26.7.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "dependencies": {
+    "@types/three": "^0.182.0",
+    "three": "^0.182.0"
+  },
+  "build": {
+    "appId": "com.mati.image2gcode",
+    "productName": "Image2GCode",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/dist/main",
+        "to": "bin/main"
+      }
+    ],
+    "linux": {
+      "target": "AppImage",
+      "category": "Graphics",
+      "executableName": "image-2-gcode"
+    }
+  }
+}

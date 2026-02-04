@@ -3,3 +3,4 @@ svgpathtools
 numpy
 flask
 flask-cors
+pyinstaller
