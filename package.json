@@ -1,7 +1,7 @@
 {
   "name": "gui",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Convert images to G-Code for CNC plotting",
   "author": "Matias Del Pin",
   "main": "dist/main.js",

@@ -32,7 +32,7 @@ class ImageReader:
         _, thresh = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY_INV)
 
         contours, _ = cv2.findContours(
-            thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+            thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE
         )
         return contours
 

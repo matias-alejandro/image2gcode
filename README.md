@@ -5,7 +5,7 @@
 **Image2GCode** is a simple and user-friendly tool designed to convert images into G-Code, optimized for plotters and CNC machines.
 
 
-![Versión](https://img.shields.io/badge/version-1.1.0-green.svg)
+![Versión](https://img.shields.io/badge/version-1.1.1-green.svg)
 
 ## Dev
 
