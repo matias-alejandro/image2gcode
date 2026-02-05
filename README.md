@@ -1,4 +1,5 @@
 # Image2GCode
+![image2gcode](build/icon.png)
 
 [English](README.md) | [Español](README.es.md)
 
@@ -6,6 +7,10 @@
 
 
 ![Versión](https://img.shields.io/badge/version-1.1.1-green.svg)
+
+## Screenshot
+
+![Image2GCode screenshot](screenshot.png)
 
 ## Dev
 

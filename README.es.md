@@ -1,11 +1,17 @@
 # Image2GCode
+![image2gcode](build/icon.png)
 
 [English](README.md) | [Español](README.es.md)
+
 
 **Image2GCode** es una herramienta simple y fácil de usar diseñada para convertir imágenes en G-Code, optimizada para trazadores (plotters) y máquinas CNC. 
 
 
 ![Versión](https://img.shields.io/badge/version-1.1.1-green.svg)
+
+## Screenshot
+
+![Image2GCode screenshot](screenshot.png)
 
 ## Dev
 
