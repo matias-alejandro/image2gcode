@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-def process_image(image_path):
+def process_image(image_path, z_safety_height=5):
     reader = ImageReader(filename=image_path)
     contours = reader.get_contours()
 
@@ -16,7 +16,7 @@ def process_image(image_path):
     vertical_feedrate = Feedrate(200)
 
     gc = GCode()
-    gc.move_linear(z=5, feedrate=vertical_feedrate)
+    gc.move_linear(z=z_safety_height, feedrate=vertical_feedrate)
 
     for contour in contours:
         if len(contour) == 0: continue
@@ -30,7 +30,7 @@ def process_image(image_path):
             gc.move_linear(x=x*scale.x, y=y*scale.y, feedrate=horizontal_feedrate)
 
         gc.move_linear(x=x0*scale.x, y=y0*scale.y, feedrate=horizontal_feedrate)
-        gc.move_linear(z=5, feedrate=vertical_feedrate)
+        gc.move_linear(z=z_safety_height, feedrate=vertical_feedrate)
 
     return "\n".join(gc.commands)
 
@@ -38,6 +38,7 @@ def process_image(image_path):
 def convert():
     data = request.json
     image_path = data.get('image_path')
+    z_safety_height = data.get('z_safety_height', 5)
     
     if not image_path:
         return jsonify({"error": "No image path provided"}), 400
@@ -46,7 +47,7 @@ def convert():
         return jsonify({"error": f"File not found: {image_path}"}), 404
     
     try:
-        gcode = process_image(image_path)
+        gcode = process_image(image_path, z_safety_height=z_safety_height)
         return jsonify({
             "message": "Conversion successful",
             "gcode": gcode

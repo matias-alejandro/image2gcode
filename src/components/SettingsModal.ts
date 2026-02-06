@@ -4,6 +4,7 @@ export interface Settings {
   showConsole: boolean;
   showGrid: boolean;
   showAxes: boolean;
+  zSafetyHeight: number;
 }
 
 export class SettingsModal {
@@ -15,6 +16,7 @@ export class SettingsModal {
   private showConsoleInput: HTMLInputElement;
   private showGridInput: HTMLInputElement;
   private showAxesInput: HTMLInputElement;
+  private zSafetyHeightInput: HTMLInputElement;
   private onApply: (settings: Settings) => void;
 
   constructor(container: HTMLElement, initialSettings: Settings, onApply: (settings: Settings) => void) {
@@ -60,6 +62,11 @@ export class SettingsModal {
           </label>
         </div>
 
+        <div class="form-group">
+          <label for="z-safety-height">Z Safety Height (mm)</label>
+          <input type="number" id="z-safety-height" value="${initialSettings.zSafetyHeight}" step="1">
+        </div>
+
         <div class="modal-actions" style="margin-top: 1.5rem;">
           <button id="close-settings">Close</button>
           <button id="apply-settings">Apply</button>
@@ -75,6 +82,7 @@ export class SettingsModal {
     this.showConsoleInput = this.modal.querySelector('#show-console') as HTMLInputElement;
     this.showGridInput = this.modal.querySelector('#show-grid') as HTMLInputElement;
     this.showAxesInput = this.modal.querySelector('#show-axes') as HTMLInputElement;
+    this.zSafetyHeightInput = this.modal.querySelector('#z-safety-height') as HTMLInputElement;
 
     this.initEvents();
   }
@@ -84,8 +92,9 @@ export class SettingsModal {
     this.applyBtn.addEventListener('click', () => {
       const size = parseInt(this.gridSizeInput.value);
       const divisions = parseInt(this.gridDivisionsInput.value);
+      const zSafetyHeight = parseInt(this.zSafetyHeightInput.value);
 
-      if (isNaN(size) || isNaN(divisions)) {
+      if (isNaN(size) || isNaN(divisions) || isNaN(zSafetyHeight)) {
         return;
       }
 
@@ -94,7 +103,8 @@ export class SettingsModal {
         gridDivisions: divisions,
         showConsole: this.showConsoleInput.checked,
         showGrid: this.showGridInput.checked,
-        showAxes: this.showAxesInput.checked
+        showAxes: this.showAxesInput.checked,
+        zSafetyHeight: zSafetyHeight,
       });
       this.hide();
     });

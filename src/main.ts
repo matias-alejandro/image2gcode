@@ -3,9 +3,18 @@ import './style.css'
 import './electron.d.ts'
 import { GCodeRenderer } from './gcode-preview.ts'
 import { SettingsModal } from './components/SettingsModal'
+import type { Settings } from './components/SettingsModal'
 
 let selectedFilePath: string | null = null;
 let currentGCode: string | null = null;
+let currentSettings: Settings = {
+	gridSize: 1000,
+	gridDivisions: 100,
+	zSafetyHeight: 5,
+	showConsole: false,
+	showGrid: true,
+	showAxes: true
+};
 
 const loadBtn = document.getElementById('load-btn') as HTMLButtonElement;
 const fileInput = document.getElementById('file-input') as HTMLInputElement;
@@ -21,13 +30,8 @@ previewLabel.textContent = 'Image 2 G-Code ' + __APP_VERSION__;
 const appContainer = document.getElementById('app') as HTMLDivElement;
 
 const gcodeRenderer = new GCodeRenderer(gcodeCanvas);
-const settingsModal = new SettingsModal(appContainer, {
-	gridSize: 1000,
-	gridDivisions: 100,
-	showConsole: false,
-	showGrid: true,
-	showAxes: true
-}, (settings) => {
+const settingsModal = new SettingsModal(appContainer, currentSettings, (settings: Settings) => {
+	currentSettings = settings;
 	gcodeRenderer.updateGrid(settings.gridSize, settings.gridDivisions);
 	gcodeRenderer.setGridVisibility(settings.showGrid);
 	gcodeRenderer.setAxesVisibility(settings.showAxes);
@@ -35,7 +39,7 @@ const settingsModal = new SettingsModal(appContainer, {
 	showConsoleState = settings.showConsole;
 	outputLog.style.display = settings.showConsole ? 'block' : 'none';
 
-	log(`Settings updated: Grid ${settings.showGrid ? 'ON' : 'OFF'}, Axes ${settings.showAxes ? 'ON' : 'OFF'}, Console ${settings.showConsole ? 'ON' : 'OFF'}`);
+	log('Settings updated');
 });
 
 const handleFileSelect = async (file: File) => {
@@ -86,7 +90,10 @@ const triggerConversion = async () => {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ image_path: selectedFilePath }),
+			body: JSON.stringify({
+				image_path: selectedFilePath,
+				z_safety_height: currentSettings.zSafetyHeight
+			}),
 		});
 
 		if (!response.ok) {
